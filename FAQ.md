@@ -14,6 +14,41 @@ You can, of course, it's even recommended, update the `openvpn` package with you
 
 ---
 
+**Q:** How do I fix DNS leaks?
+
+**A:** On Windows 10 DNS leaks are blocked by default with the `block-outside-dns` option.
+On Linux you need to add these lines to your `.ovpn` file based on your Distribution.
+
+Debian 9, 10 and Ubuntu 16.04, 18.04
+```
+script-security 2
+up /etc/openvpn/update-resolv-conf
+down /etc/openvpn/update-resolv-conf
+```
+
+Centos 6, 7
+```
+script-security 2
+up /usr/share/doc/openvpn-2.4.8/contrib/pull-resolv-conf/client.up
+down /usr/share/doc/openvpn-2.4.8/contrib/pull-resolv-conf/client.down
+```
+
+Centos 8, Fedora 30, 31
+```
+script-security 2
+up /usr/share/doc/openvpn/contrib/pull-resolv-conf/client.up
+down /usr/share/doc/openvpn/contrib/pull-resolv-conf/client.down
+```
+
+Arch Linux
+```
+script-security 2
+up /usr/share/openvpn/contrib/pull-resolv-conf/client.up
+down /usr/share/openvpn/contrib/pull-resolv-conf/client.down
+```
+
+---
+
 **Q:** Can I use an OpenVPN 2.3 client?
 
 **A:** Yes. I really recommend using an up-to-date client, but if you really need it, choose the following options:
@@ -40,8 +75,8 @@ If your client is <2.3.3, remove `tls-version-min 1.2` from your `/etc/openvpn/s
 
 ---
 
-**Q:** How to setup openVPN in a LXC container? (f.e. Proxmox)
+**Q:** What syctl and iptables changes are made by the script?
 
-**A:** See https://github.com/Nyr/openvpn-install/wiki/How-to-setup-openVPN-in-a-LXC-container-(f.e.-Proxmox)
+**A:** Iptables rules are saved at `/etc/iptables/add-openvpn-rules.sh` and `/etc/iptables/rm-openvpn-rules.sh`. They are managed by the service `/etc/systemd/system/iptables-openvpn.service`
 
----
+Sysctl options are at `/etc/sysctl.d/20-openvpn.conf`
